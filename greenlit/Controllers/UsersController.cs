@@ -31,6 +31,7 @@ namespace greenlit.Controllers
             _appSettings = appSettings.Value;
         }
 
+        // POST users/authenticate
         [AllowAnonymous]
         [HttpPost("authenticate")]
         public IActionResult Authenticate([FromBody]UserDto userDto)
@@ -63,6 +64,7 @@ namespace greenlit.Controllers
             });
         }
 
+        // POST users/register
         [AllowAnonymous]
         [HttpPost("register")]
         public IActionResult Register([FromBody]UserDto userDto)
@@ -80,6 +82,7 @@ namespace greenlit.Controllers
             }
         }
 
+        // GET users
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -88,6 +91,7 @@ namespace greenlit.Controllers
             return Ok(userDtos);
         }
 
+        // GET users/:id
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
@@ -96,6 +100,7 @@ namespace greenlit.Controllers
             return Ok(userDto);
         }
 
+        // PUT users/:id
         [HttpPut("{id}")]
         public IActionResult Update(int id, [FromBody]UserDto userDto)
         {
@@ -113,6 +118,7 @@ namespace greenlit.Controllers
             }
         }
 
+        // DELETE users/:id
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
