@@ -1,11 +1,17 @@
 ﻿using AutoMapper;
 using greenlit.Dtos;
+using greenlit.Entities;
 using greenlit.Helpers;
 using greenlit.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace greenlit.Controllers
 {
@@ -29,38 +35,89 @@ namespace greenlit.Controllers
         [HttpPost("authenticate")]
         public IActionResult Authenticate([FromBody]UserDto userDto)
         {
-            throw new NotImplementedException();
+            var user = _userService.Authenticate(userDto.EmailAddress, userDto.Password);
+
+            if (user == null)
+                return BadRequest(new { message = "Email address or password is incorrect" });
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.Name, user.Id.ToString())
+                }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var tokenString = tokenHandler.WriteToken(token);
+
+            return Ok(new AuthenticatedUser {
+                Id = user.Id,
+                EmailAddress = user.EmailAddress,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Token = tokenString
+            });
         }
 
         [AllowAnonymous]
         [HttpPost("register")]
         public IActionResult Register([FromBody]UserDto userDto)
         {
-            throw new NotImplementedException();
+            var user = _mapper.Map<User>(userDto);
+
+            try
+            {
+                _userService.Create(user, userDto.Password);
+                return Ok();
+            }
+            catch(AppException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            throw new NotImplementedException();
+            var users = _userService.GetAll();
+            var userDtos = _mapper.Map<IList<UserDto>>(users);
+            return Ok(userDtos);
         }
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            throw new NotImplementedException();
+            var user = _userService.GetById(id);
+            var userDto = _mapper.Map<UserDto>(user);
+            return Ok(userDto);
         }
 
         [HttpPut("{id}")]
         public IActionResult Update(int id, [FromBody]UserDto userDto)
         {
-            throw new NotImplementedException();
+            var user = _mapper.Map<User>(userDto);
+            user.Id = id;
+
+            try
+            {
+                _userService.Update(user, userDto.Password);
+                return Ok();
+            }
+            catch(AppException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            throw new NotImplementedException();
+            _userService.Delete(id);
+            return Ok();
         }
     }
 }
