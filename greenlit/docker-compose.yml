@@ -9,5 +9,5 @@ services:
     db:
         image: "microsoft/mssql-server-linux"
         environment:
-            SA_PASSWORD: "m0X.*dxp$qaT-Vd"
+            SA_PASSWORD: "3oD48DAD"
             ACCEPT_EULA: "Y"
