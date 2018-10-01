@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-run_cmd="dotnet run --server.urls http://*:4000"
+run_cmd="dotnet /publish/greenlit.dll"
 
 # Install .NET Core on Ubuntu
 # Update the packages, install GNU packages, register Microsoft keys/feeds, re-update the packages, and install .NET Core
