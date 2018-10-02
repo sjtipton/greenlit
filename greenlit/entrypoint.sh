@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-run_cmd="dotnet /publish/greenlit.dll"
+run_cmd="dotnet greenlit.dll"
 
 # Install .NET Core on Ubuntu
 # Update the packages, install GNU packages, register Microsoft keys/feeds, re-update the packages, and install .NET Core
@@ -27,7 +27,7 @@ until apt-key adv --keyserver packages.microsoft.com --recv-keys 52E16F86FEE04B9
 sleep 1
 done
 
-sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-bionic-prod bionic main" > /etc/apt/sources.list.d/dotnetdev.list'; \
+sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-bionic-prod bionic main" > /etc/apt/sources.list.d/dotnetdev.list';
 
 until apt-get update; do
 >&2 echo "Updating apt-get packages to recycle the Microsoft keys"
@@ -46,4 +46,9 @@ sleep 1
 done
 
 >&2 echo "SQL Server is up - executing command"
+
+ls -al;
+
+echo "Preparing to run Greenlit...";
+
 exec $run_cmd
