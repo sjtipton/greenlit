@@ -21,8 +21,7 @@ namespace greenlit
 
                         builder.SetBasePath(Directory.GetCurrentDirectory())
                             .AddEnvironmentVariables(prefix: "ASPNETCORE_")
-                            .AddJsonFile($"appsettings.json", optional: false, reloadOnChange: true)
-                            //.AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", optional: false, reloadOnChange: true)
+                            .AddJsonFile(GetAppSettingsFile(context.HostingEnvironment), optional: false, reloadOnChange: true)
                             .AddCommandLine(args)
                             .AddEnvironmentVariables();
                     })
@@ -31,5 +30,10 @@ namespace greenlit
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseStartup<Startup>()
                 .Build();
+
+        private static string GetAppSettingsFile(IHostingEnvironment env)
+        {
+            return env.IsDevelopment() ? "appsettings.Development.json" : "appsettings.json";
+        }
     }
 }
