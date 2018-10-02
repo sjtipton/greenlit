@@ -8,6 +8,11 @@ services:
             - sql.data
     sql.data:
         image: "microsoft/mssql-server-linux"
+        volumes:
+            - greenlitdata:/var/opt/mssql
         environment:
             SA_PASSWORD: "3oD48DAD"
             ACCEPT_EULA: "Y"
+
+volumes:
+    greenlitdata:
