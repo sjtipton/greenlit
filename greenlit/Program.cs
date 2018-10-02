@@ -33,7 +33,7 @@ namespace greenlit
 
         private static string GetAppSettingsFile(IHostingEnvironment env)
         {
-            return env.IsDevelopment() ? "appsettings.Development.json" : "appsettings.json";
+            return !env.IsDevelopment() ? "appsettings.json" : "appsettings.Development.json";
         }
     }
 }

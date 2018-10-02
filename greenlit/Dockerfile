@@ -9,4 +9,5 @@ COPY --from=builder src/bin/Release/netcoreapp2.1/publish app
 WORKDIR app
 RUN chmod +x ./entrypoint.sh
 EXPOSE 5000/tcp
+ENV ASPNETCORE_ENVIRONMENT Production
 ENTRYPOINT /bin/bash ./entrypoint.sh
