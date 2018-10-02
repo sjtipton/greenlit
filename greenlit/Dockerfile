@@ -1,15 +1,12 @@
-FROM microsoft/dotnet:2.1-sdk-bionic AS base
-COPY . /app
-WORKDIR /app
-RUN ["dotnet", "build", "-c", "Release"]
-RUN ["dotnet", "publish", "-c", "Release"]
-EXPOSE 5000/tcp
+FROM microsoft/dotnet:2.1-sdk-bionic AS builder
+COPY . src
+WORKDIR src
+RUN dotnet publish -c Release
 
 FROM ubuntu:bionic
-#COPY . /app
-#WORKDIR /app
-COPY --from=base /app/bin/Release/netcoreapp2.1/publish /app
-WORKDIR /app
-RUN ls -al
+COPY . app
+COPY --from=builder src/bin/Release/netcoreapp2.1/publish app
+WORKDIR app
 RUN chmod +x ./entrypoint.sh
+EXPOSE 5000/tcp
 ENTRYPOINT /bin/bash ./entrypoint.sh

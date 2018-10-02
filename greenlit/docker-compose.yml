@@ -1,12 +1,12 @@
 ﻿version: "3"
 services:
-    web:
+    greenlitweb:
         build: .
         ports:
             - "8000:80"
         depends_on:
-            - db
-    db:
+            - sql.data
+    sql.data:
         image: "microsoft/mssql-server-linux"
         environment:
             SA_PASSWORD: "3oD48DAD"
