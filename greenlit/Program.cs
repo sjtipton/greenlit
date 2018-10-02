@@ -26,7 +26,6 @@ namespace greenlit
                             .AddEnvironmentVariables();
                     })
                 .UseKestrel()
-                .UseUrls("http://*:5000")
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseStartup<Startup>()
                 .Build();
