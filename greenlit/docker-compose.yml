@@ -2,8 +2,18 @@
 services:
     greenlitweb:
         image: "slaatipton/greenlit:rc-1"
+        deploy:
+            replicas: 5
+            resources:
+                limits:
+                    cpus: "0.1"
+                    memory: 50M
+            restart_policy:
+                condition: on-failure
         ports:
             - "8000:80"
+        networks:
+            - webnet
         depends_on:
             - sql.data
     sql.data:
@@ -16,3 +26,6 @@ services:
 
 volumes:
     greenlitdata:
+
+networks:
+    webnet:
