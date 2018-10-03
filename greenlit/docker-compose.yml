@@ -1,7 +1,7 @@
 ﻿version: "3"
 services:
     greenlitweb:
-        build: .
+        image: "slaatipton/greenlit:rc-1"
         ports:
             - "8000:80"
         depends_on:
