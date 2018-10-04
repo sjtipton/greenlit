@@ -1,0 +1,33 @@
+{
+  "Services": {
+    "greenlitsql": {
+      "Env": [
+        "SA_PASSWORD=3oD48DAD",
+        "ACCEPT_EULA=Y"
+      ],
+      "Image": "microsoft/mssql-server-linux@sha256:14d1c4423f9686cbfd12f574c5bcc47d8e452e1353c45a7f71116243e8bb47f4",
+      "Networks": [
+        "webnet"
+      ],
+      "Ports": [
+        {
+          "Port": 1433,
+          "Protocol": "tcp"
+        }
+      ]
+    },
+    "greenlitweb": {
+      "Image": "slaatipton/greenlit@sha256:e7cfb6431412131d9602017b6ef65f81898f799a07e6c92a979ee36792f0aa35",
+      "Networks": [
+        "webnet"
+      ],
+      "Ports": [
+        {
+          "Port": 80,
+          "Protocol": "tcp"
+        }
+      ]
+    }
+  },
+  "Version": "0.1"
+}
