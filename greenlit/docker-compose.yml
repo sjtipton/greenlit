@@ -18,6 +18,8 @@ services:
       - greenlitsql
   greenlitsql:
     image: "microsoft/mssql-server-linux"
+    ports:
+      - "1437:1433"
     networks:
       - webnet
     volumes:
