@@ -1,0 +1,18 @@
+﻿version: "3"
+services:
+  greenlitweb:
+    build: .
+    ports:
+      - "8000:80"
+    depends_on:
+      - greenlitsql
+  greenlitsql:
+    image: "microsoft/mssql-server-linux"
+    volumes:
+      - greenlitdata:/var/opt/mssql
+    environment:
+      SA_PASSWORD: "3oD48DAD"
+      ACCEPT_EULA: "Y"
+
+volumes:
+  greenlitdata:
