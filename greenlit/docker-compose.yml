@@ -1,7 +1,7 @@
 ﻿version: "3"
 services:
   greenlitweb:
-    image: "slaatipton/greenlit:rc-1"
+    image: "slaatipton/greenlit:rc-2"
     deploy:
       replicas: 5
       resources:
@@ -13,11 +13,13 @@ services:
     ports:
       - "8000:80"
     networks:
-      - proxy
+      - webnet
     depends_on:
       - greenlitsql
   greenlitsql:
     image: "microsoft/mssql-server-linux"
+    networks:
+      - webnet
     volumes:
       - greenlitdata:/var/opt/mssql
     environment:
@@ -28,4 +30,4 @@ volumes:
   greenlitdata:
 
 networks:
-  proxy:
+  webnet:
