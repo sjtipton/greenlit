@@ -2,16 +2,14 @@
 using greenlit.Dtos;
 using greenlit.Entities;
 using greenlit.Helpers;
+using greenlit.Helpers.Jwt;
 using greenlit.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System;
+using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace greenlit.Controllers
 {
@@ -21,47 +19,32 @@ namespace greenlit.Controllers
     public class UsersController : ControllerBase
     {
         private IUserService _userService;
+        private IJwtService _jwtService;
         private IMapper _mapper;
-        private readonly AppSettings _appSettings;
+        private readonly JwtIssuerOptions _jwtOptions;
 
-        public UsersController(IUserService userService, IMapper mapper, IOptions<AppSettings> appSettings)
+        public UsersController(IUserService userService, IJwtService jwtService, IMapper mapper, IOptions<JwtIssuerOptions> jwtOptions)
         {
             _userService = userService;
+            _jwtService = jwtService;
             _mapper = mapper;
-            _appSettings = appSettings.Value;
+            _jwtOptions = jwtOptions.Value;
         }
 
         // POST users/authenticate
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody]UserDto userDto)
+        public async Task<IActionResult> Authenticate([FromBody]CredentialsDto credentialsDto)
         {
-            var user = _userService.Authenticate(userDto.EmailAddress, userDto.Password);
+            var user = _userService.Authenticate(credentialsDto.EmailAddress, credentialsDto.Password);
 
             if (user == null)
                 return BadRequest(new { message = "Email address or password is incorrect" });
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Name, user.Id.ToString())
-                }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var tokenString = tokenHandler.WriteToken(token);
+            var identity = _jwtService.GenerateClaimsIdentity(user.EmailAddress, user.Id);
+            var jwt = await Tokens.GenerateJwt(identity, _jwtService, credentialsDto.EmailAddress, _jwtOptions, new JsonSerializerSettings { Formatting = Formatting.Indented });
 
-            return Ok(new AuthenticatedUser {
-                Id = user.Id,
-                EmailAddress = user.EmailAddress,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Token = tokenString
-            });
+            return new OkObjectResult(jwt);
         }
 
         // POST users/register
