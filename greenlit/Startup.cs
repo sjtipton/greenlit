@@ -46,7 +46,7 @@ namespace greenlit
             {
                 options.Issuer = Configuration["Scrimp:JwtIssuerOptions:Issuer"];
                 options.Audience = Configuration["Scrimp:JwtIssuerOptions:Audience"];
-                options.SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256Signature);
+                options.SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
             });
 
             // Token validation
