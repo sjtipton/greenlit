@@ -1,4 +1,6 @@
-﻿namespace greenlit.Dtos
+﻿using System;
+
+namespace greenlit.Dtos
 {
     public class UserDto
     {
@@ -7,5 +9,7 @@
         public string LastName { get; set; }
         public string EmailAddress { get; set; }
         public string Password { get; set; }
+        public DateTime? CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
     }
 }
