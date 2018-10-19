@@ -44,8 +44,8 @@ namespace greenlit
 
             services.Configure<JwtIssuerOptions>(options =>
             {
-                options.Issuer = Configuration["Scrimp:JwtIssuerOptions:Issuer"];
-                options.Audience = Configuration["Scrimp:JwtIssuerOptions:Audience"];
+                options.Issuer = Configuration["JwtIssuerOptions:Issuer"];
+                options.Audience = Configuration["JwtIssuerOptions:Audience"];
                 options.SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
             });
 
@@ -53,10 +53,10 @@ namespace greenlit
             var tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,
-                ValidIssuer = Configuration["Scrimp:JwtIssuerOptions:Issuer"],
+                ValidIssuer = Configuration["JwtIssuerOptions:Issuer"],
 
                 ValidateAudience = true,
-                ValidAudience = Configuration["Scrimp:JwtIssuerOptions:Audience"],
+                ValidAudience = Configuration["JwtIssuerOptions:Audience"],
 
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = signingKey,
@@ -72,7 +72,7 @@ namespace greenlit
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(configureOptions =>
             {
-                configureOptions.ClaimsIssuer = Configuration["Scrimp:JwtIssuerOptions:Issuer"];
+                configureOptions.ClaimsIssuer = Configuration["JwtIssuerOptions:Issuer"];
                 configureOptions.TokenValidationParameters = tokenValidationParameters;
                 configureOptions.SaveToken = true;
             });
