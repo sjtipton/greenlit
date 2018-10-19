@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace greenlit.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = "ApiUser")]
     [ApiController]
     [Route("[controller]")]
     public class UsersController : ControllerBase
