@@ -36,7 +36,7 @@ namespace greenlit.Services
             return _context.Users;
         }
 
-        public User GetById(int id)
+        public User GetById(Guid id)
         {
             return _context.Users.Find(id);
         }
@@ -89,7 +89,7 @@ namespace greenlit.Services
             _context.SaveChanges();
         }
 
-        public void Delete(int id)
+        public void Delete(Guid id)
         {
             var user = _context.Users.Find(id);
             if (user != null)

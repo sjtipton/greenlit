@@ -52,7 +52,7 @@ namespace greenlit.Services
             });
         }
 
-        public ClaimsIdentity GenerateClaimsIdentity(string identifier, int id)
+        public ClaimsIdentity GenerateClaimsIdentity(string identifier, Guid id)
         {
             return GenerateClaimsIdentity(identifier, id.ToString());
         }
