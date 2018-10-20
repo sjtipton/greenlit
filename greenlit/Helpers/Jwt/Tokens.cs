@@ -1,5 +1,4 @@
 ﻿using greenlit.Services;
-using Newtonsoft.Json;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -8,20 +7,18 @@ namespace greenlit.Helpers.Jwt
 {
     public class Tokens
     {
-        public static async Task<string> GenerateJwt(ClaimsIdentity identity,
+        public static async Task<JwtResponse> GenerateJwt(ClaimsIdentity identity,
                                                      IJwtService jwtService,
                                                      string identifier,
-                                                     JwtIssuerOptions jwtOptions,
-                                                     JsonSerializerSettings serializerSettings)
+                                                     JwtIssuerOptions jwtOptions)
         {
-            var response = new
+            return new JwtResponse
             {
-                id = identity.Claims.Single(c => c.Type == "id").Value,
-                auth_token = await jwtService.GenerateEncodedToken(identifier, identity),
-                expires_in = (int)jwtOptions.ValidFor.TotalSeconds
+                Id = identity.Claims.Single(c => c.Type == "id").Value,
+                AuthToken = await jwtService.GenerateEncodedToken(identifier, identity),
+                ExpiresIn = (int)jwtOptions.ValidFor.TotalSeconds,
+                IssuedAt = jwtOptions.IssuedAt
             };
-
-            return JsonConvert.SerializeObject(response, serializerSettings);
         }
     }
 }

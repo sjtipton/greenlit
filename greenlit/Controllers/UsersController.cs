@@ -43,9 +43,9 @@ namespace greenlit.Controllers
                 return BadRequest(new { message = "Email address or password is incorrect" });
 
             var identity = _jwtService.GenerateClaimsIdentity(user.EmailAddress, user.Id);
-            var jwt = await Tokens.GenerateJwt(identity, _jwtService, credentialsDto.EmailAddress, _jwtOptions, new JsonSerializerSettings { Formatting = Formatting.Indented });
+            var jwt = await Tokens.GenerateJwt(identity, _jwtService, credentialsDto.EmailAddress, _jwtOptions);
 
-            return new OkObjectResult(jwt);
+            return Ok(jwt);
         }
 
         // POST users/register
