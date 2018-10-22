@@ -37,31 +37,26 @@ namespace greenlit
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1); // TODO is compatibility version necessary?
             services.AddAutoMapper();
 
-            // App settings
-            var appSettingsSection = Configuration.GetSection(nameof(AppSettings));
-            services.Configure<AppSettings>(appSettingsSection);
-
             // JWT Authentication
             // Following https://fullstackmark.com/post/13/jwt-authentication-with-aspnet-core-2-web-api-angular-5-net-core-identity-and-facebook-login
             // as a general guideline for wiring up JWT
-            var jwtAppSettingsOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
-            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettingsSection[nameof(AppSettings.Secret)]));
+            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["AppSettings:Secret"]));
 
             services.Configure<JwtIssuerOptions>(options =>
             {
-                options.Issuer = jwtAppSettingsOptions[nameof(JwtIssuerOptions.Issuer)];
-                options.Audience = jwtAppSettingsOptions[nameof(JwtIssuerOptions.Audience)];
-                options.SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256Signature);
+                options.Issuer = Configuration["JwtIssuerOptions:Issuer"];
+                options.Audience = Configuration["JwtIssuerOptions:Audience"];
+                options.SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
             });
 
             // Token validation
             var tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,
-                ValidIssuer = jwtAppSettingsOptions[nameof(JwtIssuerOptions.Issuer)],
+                ValidIssuer = Configuration["JwtIssuerOptions:Issuer"],
 
                 ValidateAudience = true,
-                ValidAudience = jwtAppSettingsOptions[nameof(JwtIssuerOptions.Audience)],
+                ValidAudience = Configuration["JwtIssuerOptions:Audience"],
 
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = signingKey,
@@ -77,7 +72,7 @@ namespace greenlit
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(configureOptions =>
             {
-                configureOptions.ClaimsIssuer = jwtAppSettingsOptions[nameof(JwtIssuerOptions.Issuer)];
+                configureOptions.ClaimsIssuer = Configuration["JwtIssuerOptions:Issuer"];
                 configureOptions.TokenValidationParameters = tokenValidationParameters;
                 configureOptions.SaveToken = true;
             });

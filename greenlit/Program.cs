@@ -25,7 +25,14 @@ namespace greenlit
                             .AddCommandLine(args)
                             .AddEnvironmentVariables();
                     })
-                .UseKestrel()
+                .UseKestrel((context, options) => {
+                    if (context.HostingEnvironment.IsDevelopment())
+                    {
+                        options.ListenLocalhost(int.Parse(context.Configuration["Port"]), listenOptions => {
+                            listenOptions.UseHttps();
+                        });
+                    }
+                })
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseStartup<Startup>()
                 .Build();

@@ -1,4 +1,5 @@
 ﻿using greenlit.Entities;
+using System;
 using System.Collections.Generic;
 
 namespace greenlit.Services
@@ -7,9 +8,9 @@ namespace greenlit.Services
     {
         User Authenticate(string identifier, string password);
         IEnumerable<User> GetAll();
-        User GetById(int id);
+        User GetById(Guid id);
         User Create(User user, string password);
         void Update(User user, string password = null);
-        void Delete(int id);
+        void Delete(Guid id);
     }
 }

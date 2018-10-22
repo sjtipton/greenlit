@@ -8,12 +8,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace greenlit.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = "ApiUser")]
     [ApiController]
     [Route("[controller]")]
     public class UsersController : ControllerBase
@@ -42,9 +43,9 @@ namespace greenlit.Controllers
                 return BadRequest(new { message = "Email address or password is incorrect" });
 
             var identity = _jwtService.GenerateClaimsIdentity(user.EmailAddress, user.Id);
-            var jwt = await Tokens.GenerateJwt(identity, _jwtService, credentialsDto.EmailAddress, _jwtOptions, new JsonSerializerSettings { Formatting = Formatting.Indented });
+            var jwt = await Tokens.GenerateJwt(identity, _jwtService, credentialsDto.EmailAddress, _jwtOptions);
 
-            return new OkObjectResult(jwt);
+            return Ok(jwt);
         }
 
         // POST users/register
@@ -76,7 +77,7 @@ namespace greenlit.Controllers
 
         // GET users/:id
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        public IActionResult GetById(Guid id)
         {
             var user = _userService.GetById(id);
             var userDto = _mapper.Map<UserDto>(user);
@@ -85,7 +86,7 @@ namespace greenlit.Controllers
 
         // PUT users/:id
         [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody]UserDto userDto)
+        public IActionResult Update(Guid id, [FromBody]UserDto userDto)
         {
             var user = _mapper.Map<User>(userDto);
             user.Id = id;
@@ -103,7 +104,7 @@ namespace greenlit.Controllers
 
         // DELETE users/:id
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(Guid id)
         {
             _userService.Delete(id);
             return Ok();
