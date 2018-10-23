@@ -1,7 +1,7 @@
 ﻿version: "3"
 services:
   greenlitweb:
-    image: "slaatipton/greenlit:rc-2"
+    image: "slaatipton/greenlit:rc-4"
     deploy:
       replicas: 5
       resources:
@@ -33,3 +33,5 @@ volumes:
 
 networks:
   webnet:
+    external:
+      name: webnet
