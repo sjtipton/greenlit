@@ -1,13 +1,19 @@
-﻿version: "3"
+﻿version: "3.3"
 services:
   greenlitweb:
-    build: .
+    image: "slaatipton/greenlit:rc-4"
     ports:
       - "8000:80"
+    networks:
+      - webnet
+    labels:
+      - "com.docker.ucp.mesh.http=external_route=http://greenlitauth.io,internal_port=80"
     depends_on:
       - greenlitsql
   greenlitsql:
     image: "microsoft/mssql-server-linux"
+    networks:
+      - webnet
     volumes:
       - greenlitdata:/var/opt/mssql
     environment:
@@ -16,3 +22,8 @@ services:
 
 volumes:
   greenlitdata:
+
+networks:
+  webnet:
+    external:
+      name: webnet
