@@ -28,9 +28,7 @@ namespace greenlit
                 .UseKestrel((context, options) => {
                     if (context.HostingEnvironment.IsDevelopment())
                     {
-                        options.ListenLocalhost(int.Parse(context.Configuration["Port"]), listenOptions => {
-                            listenOptions.UseHttps();
-                        });
+                        options.ListenLocalhost(int.Parse(context.Configuration["Port"]));
                     }
                 })
                 .UseContentRoot(Directory.GetCurrentDirectory())
