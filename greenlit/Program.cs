@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using System.IO;
+using System.Net;
 
 namespace greenlit
 {
@@ -28,7 +29,7 @@ namespace greenlit
                 .UseKestrel((context, options) => {
                     if (context.HostingEnvironment.IsDevelopment())
                     {
-                        options.ListenLocalhost(int.Parse(context.Configuration["Port"]));
+                        options.Listen(IPAddress.Loopback, int.Parse(context.Configuration["Port"]));
                     }
                 })
                 .UseContentRoot(Directory.GetCurrentDirectory())
